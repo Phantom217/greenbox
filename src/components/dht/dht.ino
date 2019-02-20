@@ -48,5 +48,8 @@ void loop( )
     Serial.print( " deg. C, H = " );
     Serial.print( humidity, 1 );
     Serial.println( "%" );
+    int sensorValue = analogRead(A0);
+    Serial.println(sensorValue);
+    delay(1);
   }
 }
