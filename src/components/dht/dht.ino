@@ -1,7 +1,9 @@
 #include <dht.h>
 #include <dht_nonblocking.h>
 #define DHT_SENSOR_TYPE DHT_TYPE_11
+int sensor_pin = A0;
 
+int output_value ;
 static const int DHT_SENSOR_PIN = 2;
 DHT_nonblocking dht_sensor( DHT_SENSOR_PIN, DHT_SENSOR_TYPE );
 
@@ -49,5 +51,16 @@ void loop( )
     Serial.print( " deg. C, H = " );
     Serial.print( humidity, 1 );
     Serial.println( "%" );
+    
   }
+   output_value= analogRead(sensor_pin);
+   output_value = map(output_value,550,0,0,100);
+
+   Serial.print("Mositure : ");
+
+   Serial.print(output_value);
+
+   Serial.println("%");
+
+   delay(1000);
 }
