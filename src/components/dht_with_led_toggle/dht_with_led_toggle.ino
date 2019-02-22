@@ -62,6 +62,12 @@ void loop()
     Serial.println("%");
     Serial.print("Demo_var = ");
     Serial.println(demo_var, 1);
-    demo_var++;
+    
+    if (demo_var <= 20.0)
+      demo_var = 23.0;
+    else if (demo_var >= 26.0)
+      demo_var = 20.0;
+    else
+      demo_var++;
   }
 }
