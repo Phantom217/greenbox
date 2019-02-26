@@ -70,11 +70,11 @@ bool DHT_nonblocking::measure( float *temperature, float *humidity )
   }
 }
 
-bool DHT_nonblocking::measure_humidity( float *humidity )
+bool DHT_nonblocking::measure_moisture( float *moisture )
 {
   if( read_nonblocking( ) == true )
   {
-    *humidity = read_humidity( );
+    *moisture = read_humidity( );
     return( true );
   }
   else
