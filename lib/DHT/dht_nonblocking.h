@@ -39,6 +39,7 @@ class DHT_nonblocking
   public:
     DHT_nonblocking( uint8_t pin, uint8_t type );
     bool measure( float *temperature, float *humidity );
+    bool measure_moisture( float *moisture );
 
   private:
     bool read_data( );
