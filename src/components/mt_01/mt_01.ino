@@ -6,6 +6,22 @@ void setup()
     Serial.begin(9600);
 }
 
+static bool measure_soil_moisture(float moisture)
+{
+    static unsigned long measurement_timestamp = millis();
+
+    /* Measure once every four seconds */
+    if(millis() - measurement_timestamp > 3000ul)
+    {
+        if(mt_sensor.measure(moisture) == true)
+        {
+            measurement_timestamp = millis();
+            return(true);
+        }
+    }
+
+    return(false);
+}
 void loop()
 {
     float moisture;
