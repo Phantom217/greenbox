@@ -41,7 +41,7 @@ void loop()
 {
   float temperature;
   float humidity;
-  
+
   /* Measure temperature and humidity.  If true, measurement is available. */
   if(measure_environment(&temperature, &humidity) == true)
   {
@@ -62,7 +62,7 @@ void loop()
     Serial.println("%");
     Serial.print("Demo_var = ");
     Serial.println(demo_var, 1);
-    
+
     if (demo_var <= 20.0)
       demo_var = 23.0;
     else if (demo_var >= 26.0)
