@@ -53,7 +53,7 @@ void loop()
   {
     if (demo_var >= 25.0) /* 25.0 is just a placeholder for the desired temp to turn on fan */
     {
-      if (25.0 <= (25.0 + 1)) /* 25.0 is just a placeholder for the desired temp to turn on fan */
+      if (25.0 <= (25.0 + 1)) /* idea is if the temp is greater than a certain amount more than the highest desired temp to turn fan on full else medium speed while over */
       {
         Serial.println("PWM ON: full speed");
         analogWrite(DC_ENABLE, 255);
