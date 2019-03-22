@@ -2,34 +2,34 @@
 #define DHT_SENSOR_TYPE DHT_TYPE_11
 
 static const int LAMP_GREEN_PIN = 2;
-static const int LAMP_RED_PIN =  3;
+static const int LAMP_HEAT_PIN =  3;
 static const int FAN_01_PIN = 4;
 static const int DHT_SENSOR_PIN = 5;
 DHT_nonblocking dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
 static const unsigned long LAMP_TIMER = 10000;
-unsigned long timer_start_lamp = 0;
+unsigned long lamp_timer_start = 0;
 bool green_on = false;
-bool red_on = false;
+bool heat_on = false;
 bool fan_on = false;
-bool timer_active_lamp = false;
+bool lamp_timer_active = false;
 
 void setup()
 {
   Serial.begin(9600);
 
   pinMode(LAMP_GREEN_PIN, OUTPUT);
-  pinMode(LAMP_RED_PIN, OUTPUT);
+  pinMode(LAMP_HEAT_PIN, OUTPUT);
   pinMode(FAN_01_PIN, OUTPUT);
 
   digitalWrite(LAMP_GREEN_PIN, LOW);
   green_on = false;
-  digitalWrite(LAMP_RED_PIN, LOW);
-  red_on = false;
+  digitalWrite(LAMP_HEAT_PIN, HIGH); /* start with heat lamp on */
+  heat_on = true;
   digitalWrite(FAN_01_PIN, LOW);
   fan_on = false;
 
-  timer_start_lamp = millis();
-  timer_active_lamp = true;
+  lamp_timer_start = millis();
+  lamp_timer_active = true;
 }
 
 
@@ -84,29 +84,29 @@ void loop()
     Serial.println("%");
   }
 
-  if (timer_active_lamp && (millis() - timer_start_lamp) >= LAMP_TIMER)
+  if (lamp_timer_active && (millis() - lamp_timer_start) >= LAMP_TIMER)
   {
-    timer_start_lamp += LAMP_TIMER;
+    lamp_timer_start += LAMP_TIMER;
     green_on = !green_on;
-    red_on = !red_on;
+    heat_on = !heat_on;
 
-    if (green_on && !red_on)
+    if (green_on && !heat_on)
     {
       digitalWrite(LAMP_GREEN_PIN, HIGH);
-      digitalWrite(LAMP_RED_PIN, LOW);
+      digitalWrite(LAMP_HEAT_PIN, LOW);
       Serial.println("Green Lamp ON, Heat Lamp OFF")
     }
 
-    else if (red_on && !green_on)
+    else if (heat_on && !green_on)
     {
-      digitalWrite(LAMP_RED_PIN, HIGH);
+      digitalWrite(LAMP_HEAT_PIN, HIGH);
       digitalWrite(LAMP_GREEN_PIN, LOW);
       Serial.println("Heat Lamp ON, Green Lamp OFF")
     }
 
     else
     {
-      Serial.println("Well, this is awkward...");
+      Serial.println("Well, this is awkward... write better code!");
     }
   }
 }
