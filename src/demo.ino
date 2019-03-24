@@ -21,11 +21,11 @@ void setup()
   pinMode(LAMP_HEAT_PIN, OUTPUT);
   pinMode(FAN_01_PIN, OUTPUT);
 
-  digitalWrite(LAMP_GREEN_PIN, LOW);
-  green_on = false;
-  digitalWrite(LAMP_HEAT_PIN, HIGH); /* start with heat lamp on */
-  heat_on = true;
-  digitalWrite(FAN_01_PIN, LOW);
+  digitalWrite(LAMP_GREEN_PIN, LOW); /* somehow this turns it on, not sure why */
+  green_on = true;
+  digitalWrite(LAMP_HEAT_PIN, HIGH); /* turns the lamp off */
+  heat_on = false;
+  digitalWrite(FAN_01_PIN, HIGH); /* same case as the above two */
   fan_on = false;
 
   lamp_timer_start = millis();
@@ -63,16 +63,16 @@ void loop()
   /* Measure temperature and humidity.  If true, measurement is available. */
   if (measure_environment(&temperature, &humidity) == true)
   {
-    if (temperature >= 25.0)
+    if (temperature >= 24.0)
     {
-      digitalWrite(FAN_01_PIN, HIGH);
+      digitalWrite(FAN_01_PIN, LOW);
       fan_on = true;
       Serial.println("Fan ON");
     }
 
     else
     {
-      digitalWrite(FAN_01_PIN, LOW);
+      digitalWrite(FAN_01_PIN, HIGH);
       fan_on = false;
       Serial.println("Fan OFF");
     }
@@ -92,16 +92,16 @@ void loop()
 
     if (green_on && !heat_on)
     {
-      digitalWrite(LAMP_GREEN_PIN, HIGH);
-      digitalWrite(LAMP_HEAT_PIN, LOW);
-      Serial.println("Green Lamp ON, Heat Lamp OFF")
+      digitalWrite(LAMP_GREEN_PIN, LOW);
+      digitalWrite(LAMP_HEAT_PIN, HIGH);
+      Serial.println("Green Lamp ON, Heat Lamp OFF");
     }
 
     else if (heat_on && !green_on)
     {
-      digitalWrite(LAMP_HEAT_PIN, HIGH);
-      digitalWrite(LAMP_GREEN_PIN, LOW);
-      Serial.println("Heat Lamp ON, Green Lamp OFF")
+      digitalWrite(LAMP_HEAT_PIN, LOW);
+      digitalWrite(LAMP_GREEN_PIN, HIGH);
+      Serial.println("Heat Lamp ON, Green Lamp OFF");
     }
 
     else
