@@ -9,12 +9,12 @@ static const int LAMP_HEAT_PIN =  3;
 static const int FAN_01_PIN = 4;
 static const int DHT_SENSOR_PIN = 5;
 DHT_nonblocking dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
-static const unsigned long LAMP_TIMER = 10000;
-unsigned long lamp_timer_start = 0;
+//static const unsigned long LAMP_TIMER = 10000;
+//unsigned long lamp_timer_start = 0;
 bool green_on = false;
 bool heat_on = false;
 bool fan_on = false;
-bool lamp_timer_active = false;
+//bool lamp_timer_active = false;
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
@@ -55,8 +55,8 @@ void setup()
   digitalWrite(FAN_01_PIN, HIGH); /* same case as the above two */
   fan_on = false;
 
-  lamp_timer_start = millis();
-  lamp_timer_active = true;
+ // lamp_timer_start = millis();
+ // lamp_timer_active = true;
   //greenbox setup end
 }
 
@@ -138,31 +138,31 @@ void loop()
     Serial.println("%");
   }
 
-  if (lamp_timer_active && (millis() - lamp_timer_start) >= LAMP_TIMER)
-  {
-    lamp_timer_start += LAMP_TIMER;
+ // if (lamp_timer_active && (millis() - lamp_timer_start) >= LAMP_TIMER)
+ // {
+    //lamp_timer_start += LAMP_TIMER;
     //green_on = !green_on;
     //heat_on = !heat_on;
 
-    if (green_on && !heat_on)
+    /*if (green_on && !heat_on)
     {
       //digitalWrite(LAMP_GREEN_PIN, LOW);
      //digitalWrite(LAMP_HEAT_PIN, HIGH);
       //Serial.println("Green Lamp ON, Heat Lamp OFF");
-    }
+    }*/
 
-    else if (heat_on && !green_on)
+    /*else if (heat_on && !green_on)
     {
       //digitalWrite(LAMP_HEAT_PIN, LOW);
       //digitalWrite(LAMP_GREEN_PIN, HIGH);
       //Serial.println("Heat Lamp ON, Green Lamp OFF");
-    }
+    }*/
 
-    else
+    /*else
     {
-      Serial.println("Well, this is awkward... write better code!");
-    }
-  }
+     // Serial.println("Well, this is awkward... write better code!");
+    }*/
+  //}
 
   //ethernet test section begin
    // listen for incoming clients
@@ -216,7 +216,7 @@ void loop()
       }
     }
     // give the web browser time to receive the data
-    delay(1);
+    //delay(1);
     // close the connection:
     client.stop();
     Serial.println("client disconnected");
