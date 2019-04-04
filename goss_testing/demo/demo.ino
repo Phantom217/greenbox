@@ -87,27 +87,48 @@ void loop()
 {
   float temperature;
   float temp_f;
-;
+
   float humidity;
 
   /* Measure temperature and humidity.  If true, measurement is available. */
   if (measure_environment(&temperature, &humidity) == true)
   {
     //if (temperature >= 24.0)
-    if (((temperature*9/5)+32) >= 85.0)
+    if (((temperature*9/5)+32) >= 90.0)//if the temperature read by the sensor is greater than 85 F
     {
-      digitalWrite(FAN_01_PIN, LOW);
-      fan_on = true;
-      Serial.println("Fan ON");
+      digitalWrite(FAN_01_PIN, LOW);//turn the fan on
+      fan_on = true;//turn the fan on
+      Serial.println("Fan ON");//write out a string that indicates FAN ON
     }
 
-    else
+    if (((temperature*9/5)+32) < 85.0)//if the temperature read by the sensor is greater than 85 F
     {
-      digitalWrite(FAN_01_PIN, HIGH);
-      fan_on = false;
-      Serial.println("Fan OFF");
+      digitalWrite(FAN_01_PIN, HIGH);//turn the fan OFF
+      fan_on = false;//turn the fan on
+      Serial.println("Fan OFF");//write out a string that indicates FAN FF
     }
 
+    if (((temperature*9/5)+32) > 85.0 )//if the temperature read by the sensor is greater than 85 F
+    {     
+      digitalWrite(LAMP_HEAT_PIN, HIGH);//turn the heat lamp OFF
+      heat_on = false;//turn the heat lamp OFF
+      Serial.println("Heat OFF due to temp > 90");//write out a string that indicates heat OFF
+    }
+
+    if (((temperature*9/5)+32) <= 80.0)//if the temperature read by the sensor is greater than 85 F
+    {     
+      digitalWrite(LAMP_HEAT_PIN, LOW);//turn the heat lamp ON
+      heat_on = true;//turn the heat lamp ON
+      Serial.println("Heat ON due to temp < 80");//write out a string that indicates heat ON
+    }
+
+    /*else
+    {
+      digitalWrite(FAN_01_PIN, HIGH);//turn the fan off
+      fan_on = false;//turn the fan off
+      Serial.println("Fan OFF");//write out a string that indicates FAN OFF
+    }*/
+    //print out temp and humidity in the form "T = 68.0 deg. C, H = 40.0%"
     Serial.print("T = ");
     //Serial.print(temperature, 1);
     Serial.print(((temperature * 9/5) + 32), 1);
@@ -120,21 +141,21 @@ void loop()
   if (lamp_timer_active && (millis() - lamp_timer_start) >= LAMP_TIMER)
   {
     lamp_timer_start += LAMP_TIMER;
-    green_on = !green_on;
-    heat_on = !heat_on;
+    //green_on = !green_on;
+    //heat_on = !heat_on;
 
     if (green_on && !heat_on)
     {
-      digitalWrite(LAMP_GREEN_PIN, LOW);
-      digitalWrite(LAMP_HEAT_PIN, HIGH);
-      Serial.println("Green Lamp ON, Heat Lamp OFF");
+      //digitalWrite(LAMP_GREEN_PIN, LOW);
+     //digitalWrite(LAMP_HEAT_PIN, HIGH);
+      //Serial.println("Green Lamp ON, Heat Lamp OFF");
     }
 
     else if (heat_on && !green_on)
     {
-      digitalWrite(LAMP_HEAT_PIN, LOW);
-      digitalWrite(LAMP_GREEN_PIN, HIGH);
-      Serial.println("Heat Lamp ON, Green Lamp OFF");
+      //digitalWrite(LAMP_HEAT_PIN, LOW);
+      //digitalWrite(LAMP_GREEN_PIN, HIGH);
+      //Serial.println("Heat Lamp ON, Green Lamp OFF");
     }
 
     else
