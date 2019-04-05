@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>greenbox</title>
+    <style>
+        body { font-family: sans-serif; }
+        div { background-color: silver; }
+		h1.status_banner{
+		background: #00FF7C	
+		}
+        .status_grid {
+            display: grid;
+            grid-template-rows: 100px 100px 100px;
+			grid-template-columns: 165px 165px;		
+			grid-gap: 5px 5px; /* grid-gap: 20px; */
+        }
+		
+		.status_tile_vert {
+            display: flex;
+            /*flex-direction: column; */
+			flex-direction: row;
+			grid-gap: 3px 4px; /*divide by 5 based on parent*/
+			
+        }
+		.status_tile_horiz {
+            display: flex;
+            /*flex-direction: column; */
+			flex-direction: column;
+			grid-gap: 3px 4px; /*divide by 5 based on parent*/
+			
+        }
+		
+    </style>
+</head>
+	
+<body>
+<h1 class="status_banner">status</h1>	
+	
+<section class="status_grid">
+		<section class="status_tile_vert">
+    		<div style="text-align: right; color: aqua; border: 1px solid #000000; height: 100%; width: 70%">1</div> 	
+			<div style="text-align: right; color: aqua; border: 1px solid #000000; height: 100%; width: 30%">1</div> 
+		</section>
+	
+		<section class="status_tile_horiz">
+    		<div style="text-align: right; color: aqua; border: 1px solid #000000; height: 70%; width: 100%">1</div> 	
+			<div style="text-align: right; color: aqua; border: 1px solid #000000; height: 30%; width: 100%">1</div> 
+		</section>
+	
+	
+	<div>Humidity</div> 
+	<div>Moisture</div><div>Fan</div> 
+	<div>G. Light</div> <div>H. Light</div>
+</section>
+<br>
+<br><br>
+<section class="status_grid">
+    
+		<section class="status_tile_right">
+    		<div>Temp</div> <div>Humidity</div> 
+			<div>Moisture</div>	
+		</section>
+
+</section>
+<br>
+	
+</body>
+</html>
