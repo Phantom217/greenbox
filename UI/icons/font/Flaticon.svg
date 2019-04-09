@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2019-4-4: Created with FontForge (http://fontforge.org)
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+<metadata>
+Created by FontForge 20170731 at Thu Apr  4 23:39:28 2019
+ By root
+
+</metadata>
+<defs>
+<font id="Flaticon" horiz-adv-x="200" >
+  <font-face 
+    font-family="Flaticon"
+    font-weight="400"
+    font-stretch="normal"
+    units-per-em="512"
+    panose-1="2 0 5 3 0 0 0 0 0 0"
+    ascent="448"
+    descent="-64"
+    bbox="128 -64 384 448"
+    underline-thickness="25.6"
+    underline-position="-51.2"
+    unicode-range="U+0020-F100"
+  />
+    <missing-glyph />
+    <glyph glyph-name="space" unicode=" " 
+ />
+    <glyph glyph-name="003-thermometer" unicode="&#xf100;" horiz-adv-x="512" 
+d="M341.333 159.407c26.1865 -23.4375 42.667 -57.498 42.667 -95.4072c0 -70.6934 -57.3076 -128 -128 -128s-128 57.3066 -128 128c0 37.9092 16.4805 71.9697 42.667 95.4082v203.259c0 47.1279 38.2051 85.333 85.333 85.333s85.333 -38.2051 85.333 -85.333v-203.26z
+M256 -21.333c47.1279 0 85.333 38.2051 85.335 85.333c0 24.6377 -10.4414 47.4922 -28.4551 63.6152l-14.2119 12.7197v222.332c0 23.5654 -19.1025 42.667 -42.667 42.667s-42.667 -19.1025 -42.667 -42.667v-222.332l-14.2119 -12.7197
+c-18.0137 -16.123 -28.4551 -38.9785 -28.4551 -63.6152c0 -47.1279 38.2051 -85.333 85.333 -85.333zM234.667 21.333v256h42.667v-256h-42.667zM192 64c0 35.3467 28.6533 64 64 64s64 -28.6533 64 -64s-28.6533 -64 -64 -64s-64 28.6533 -64 64z" />
+  </font>
+</defs></svg>
