@@ -1,5 +1,8 @@
 #include <dht_nonblocking.h>
 #define DHT_SENSOR_TYPE DHT_TYPE_11
+#include <SPI.h>
+#include <Ethernet.h>
+#include <SD.h>
 
 static const int LAMP_GREEN_PIN = 2;
 static const int LAMP_HEAT_PIN =  3;
@@ -11,10 +14,22 @@ unsigned long lamp_timer_start = 0;
 bool green_on = false;
 bool heat_on = false;
 bool fan_on = false;
-bool lamp_timer_active = false;
+/* bool lamp_timer_active = false; */
+
+byte mac[] = { 0x00, 0xAA, 0xBB,0xCC, 0xDE, 0x02 };
+
+char server_name[] = "web.greenbox.net";
+
+EthernetClient client;
 
 void setup()
 {
+  if (Ethernet.begin(mac) == 0)
+  {
+    Serial.println("Failed to configure Ethernet using DHCP");
+    while (true);
+  }
+
   Serial.begin(9600);
 
   pinMode(LAMP_GREEN_PIN, OUTPUT);
@@ -58,23 +73,37 @@ static bool measure_environment(float *temperature, float *humidity)
 void loop()
 {
   float temperature;
+  float temp_f;
   float humidity;
+
+  temp_f = (temperature * 9/5) + 32;
 
   /* Measure temperature and humidity.  If true, measurement is available. */
   if (measure_environment(&temperature, &humidity) == true)
   {
-    if (temperature >= 24.0)
+    if (temperature >= 32.0)
     {
-      digitalWrite(FAN_01_PIN, LOW);
-      fan_on = true;
+      digitalWrite(FAN_01_PIN, LOW); /*turn fan on */
+      fan_on = true; /* set flag */
       Serial.println("Fan ON");
     }
-
-    else
+    if (temperature < 29.4)
     {
-      digitalWrite(FAN_01_PIN, HIGH);
+      digitalWrite(FAN_01_PIN, HIGH); /*turn fan off */
       fan_on = false;
       Serial.println("Fan OFF");
+    }
+    if (temperature > 29.4)
+    {
+      digitalWrite(LAMP_HEAT_PIN, HIGH); /* heat lamp off */
+      heat_on = false;
+      Serial.println("Heat OFF: Temp > 85 deg. F");
+    }
+    if (tempreature <= 26.6)
+    {
+      digitalWrite(LAMP_HEAT_PIN, LOW);
+      heat_on = true;
+      Serial.println("Heat ON: Temp < 80 deg. F");
     }
 
     Serial.print("T = ");
@@ -84,29 +113,34 @@ void loop()
     Serial.println("%");
   }
 
-  if (lamp_timer_active && (millis() - lamp_timer_start) >= LAMP_TIMER)
+
+}
+
+void sendGET()
+{
+  if (client.connect(server_name, 80))
   {
-    lamp_timer_start += LAMP_TIMER;
-    green_on = !green_on;
-    heat_on = !heat_on;
-
-    if (green_on && !heat_on)
-    {
-      digitalWrite(LAMP_GREEN_PIN, LOW);
-      digitalWrite(LAMP_HEAT_PIN, HIGH);
-      Serial.println("Green Lamp ON, Heat Lamp OFF");
-    }
-
-    else if (heat_on && !green_on)
-    {
-      digitalWrite(LAMP_HEAT_PIN, LOW);
-      digitalWrite(LAMP_GREEN_PIN, HIGH);
-      Serial.println("Heat Lamp ON, Green Lamp OFF");
-    }
-
-    else
-    {
-      Serial.println("Well, this is awkward... write better code!");
-    }
+    Serial.println("connected");
+    client.println("GET /~shb/arduino.txt HTTP/1.1");
+    client.println("Host: web.greenbox.net");
+    client.println("Connection: close");
   }
+  else
+  {
+    Serial.println("connection failed");
+    Serial.println();
+  }
+
+  while (client.connected() && !client.available()) delay(1);
+  while (client.connected() || !client.available())
+  {
+    char c = client.read();
+    Serial.print(c);
+  }
+
+  Serial.println();
+  Serial.println("disconnecting...");
+  Serial.println("=====================");
+  Serial.println();
+  client.stop();
 }
