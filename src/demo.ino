@@ -5,13 +5,13 @@
 #include <SD.h>
 
 static const int LAMP_GREEN_PIN = 2;
-static const int LAMP_HEAT_PIN =  3;
+/* static const int LAMP_HEAT_PIN =  3; */
 static const int FAN_01_PIN = 4;
 static const int DHT_SENSOR_PIN = 5;
 DHT_nonblocking dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
-static const unsigned long LAMP_TIMER = 10000;
-unsigned long lamp_timer_start = 0;
-bool green_on = false;
+/* static const unsigned long LAMP_TIMER = 10000; */
+/* unsigned long lamp_timer_start = 0; */
+/* bool green_on = false; */
 bool heat_on = false;
 bool fan_on = false;
 /* bool lamp_timer_active = false; */
@@ -32,19 +32,19 @@ void setup()
 
   Serial.begin(9600);
 
-  pinMode(LAMP_GREEN_PIN, OUTPUT);
+/*   pinMode(LAMP_GREEN_PIN, OUTPUT); */
   pinMode(LAMP_HEAT_PIN, OUTPUT);
   pinMode(FAN_01_PIN, OUTPUT);
 
-  digitalWrite(LAMP_GREEN_PIN, LOW); /* somehow this turns it on, not sure why */
-  green_on = true;
+/*   digitalWrite(LAMP_GREEN_PIN, LOW); /* somehow this turns it on, not sure why */ */
+/*   green_on = true; */
   digitalWrite(LAMP_HEAT_PIN, HIGH); /* turns the lamp off */
   heat_on = false;
   digitalWrite(FAN_01_PIN, HIGH); /* same case as the above two */
   fan_on = false;
 
-  lamp_timer_start = millis();
-  lamp_timer_active = true;
+/*   lamp_timer_start = millis(); */
+/*   lamp_timer_active = true; */
 }
 
 
@@ -101,14 +101,14 @@ void loop()
     }
     if (tempreature <= 26.6)
     {
-      digitalWrite(LAMP_HEAT_PIN, LOW);
+      digitalWrite(LAMP_HEAT_PIN, LOW); /* heat lamp on */
       heat_on = true;
       Serial.println("Heat ON: Temp < 80 deg. F");
     }
 
     Serial.print("T = ");
-    Serial.print(temperature, 1);
-    Serial.print(" deg. C, H = ");
+    Serial.print(temp_f, 1);
+    Serial.print(" deg. F, H = ");
     Serial.print(humidity, 1);
     Serial.println("%");
   }
@@ -118,29 +118,31 @@ void loop()
 
 void sendGET()
 {
-  if (client.connect(server_name, 80))
+  if (client.connect(server_name, 80)) /* start client connection, check for connection*/
   {
     Serial.println("connected");
-    client.println("GET /~shb/arduino.txt HTTP/1.1");
+/* edit next 2 lines for reading html from sd card */
+    client.println("GET /~shb/arduino.txt HTTP/1.1"); /* download text */
     client.println("Host: web.greenbox.net");
-    client.println("Connection: close");
+    client.println("Connection: close"); /* close 1.1 persistent connection */
+    client.println(); /* end of get request */
   }
   else
   {
-    Serial.println("connection failed");
+    Serial.println("connection failed"); /* error message if no client */
     Serial.println();
   }
 
-  while (client.connected() && !client.available()) delay(1);
-  while (client.connected() || !client.available())
+  while (client.connected() && !client.available()) delay(1); /* wait for data */
+  while (client.connected() || !client.available()) /* connected or data available */
   {
-    char c = client.read();
-    Serial.print(c);
+    char c = client.read(); /* get byte from ethernet buffer */
+    Serial.print(c); /* print byte to serial monitor */
   }
 
   Serial.println();
   Serial.println("disconnecting...");
   Serial.println("=====================");
   Serial.println();
-  client.stop();
+  client.stop(); /* stop client */
 }
