@@ -16,6 +16,8 @@ bool green_on = false;
 bool heat_on = false;
 bool fan_on = false;
 //bool lamp_timer_active = false;
+String STATUS_HEAT="inHEAT OFF";//upon startup, the status of heat will be shown as this until it is commanded to turn on
+String STATUS_FAN="inFAN OFF";//upon startup, the status of fan will be shown as this until it is commanded to turn on
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
@@ -95,32 +97,40 @@ void loop()
   if (measure_environment(&temperature, &humidity) == true)
   {
     //if (temperature >= 24.0)
-    if (((temperature*9/5)+32) >= 90.0)//if the temperature read by the sensor is greater than 85 F
+    if (((temperature*9/5)+32) >= 84.0)//if the temperature read by the sensor is greater than 
     {
+      STATUS_FAN="FAN ON";
       digitalWrite(FAN_01_PIN, LOW);//turn the fan on
       fan_on = true;//turn the fan on
       Serial.println("Fan ON");//write out a string that indicates FAN ON
+    
     }
 
-    if (((temperature*9/5)+32) < 85.0)//if the temperature read by the sensor is greater than 85 F
+    if (((temperature*9/5)+32) < 82.0)//if the temperature read by the sensor is less than
     {
+      STATUS_FAN="FAN OFF";
       digitalWrite(FAN_01_PIN, HIGH);//turn the fan OFF
       fan_on = false;//turn the fan on
-      Serial.println("Fan OFF");//write out a string that indicates FAN FF
+      Serial.println("Fan OFF");//write out a string that indicates FAN OFF
+      
     }
 
     if (((temperature*9/5)+32) > 85.0 )//if the temperature read by the sensor is greater than 85 F
-    {     
+    {  
+      STATUS_HEAT="HEAT OFF";   
       digitalWrite(LAMP_HEAT_PIN, HIGH);//turn the heat lamp OFF
       heat_on = false;//turn the heat lamp OFF
       Serial.println("Heat OFF due to temp > 90");//write out a string that indicates heat OFF
+      
     }
 
     if (((temperature*9/5)+32) <= 80.0)//if the temperature read by the sensor is greater than 85 F
-    {     
+    {   
+      STATUS_HEAT="HEAT ON";  
       digitalWrite(LAMP_HEAT_PIN, LOW);//turn the heat lamp ON
       heat_on = true;//turn the heat lamp ON
       Serial.println("Heat ON due to temp < 80");//write out a string that indicates heat ON
+      
     }
 
     /*else
@@ -134,7 +144,7 @@ void loop()
     //Serial.print(temperature, 1);
     Serial.print(((temperature * 9/5) + 32), 1);
     //Serial.print(temp_f, 1);
-    Serial.print(" deg. C, H = ");
+    Serial.print(" deg. F, H = ");
     Serial.print(humidity, 1);
     Serial.println("%");
   }
@@ -162,22 +172,18 @@ void loop()
           client.println();
           client.println("<!DOCTYPE HTML>");
           client.println("<html>");
-          // output the value of each analog input pin
-          /*for (int analogChannel = 0; analogChannel < 6; analogChannel++) {
-            int sensorReading = analogRead(analogChannel);
-            client.print("analog input ");
-            client.print(analogChannel);
-            client.print(" is ");
-            client.print(sensorReading);
-            client.println("<br />");  
-          }*/
+         
           client.print("T = ");
           client.print(((temperature * 9/5) + 32), 1);
           client.print(" deg. C, H = ");
           client.print(humidity, 1);
           client.println("%");
-  
           
+          client.println("<br>");
+          client.print(STATUS_HEAT);
+          client.print("----");
+          client.print(STATUS_FAN);
+                  
           client.println("</html>");
           break;
         }
