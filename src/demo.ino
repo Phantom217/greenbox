@@ -4,8 +4,8 @@
 #include <Ethernet.h>
 #include <SD.h>
 
-static const int LAMP_GREEN_PIN = 2;
-/* static const int LAMP_HEAT_PIN =  3; */
+/* static const int LAMP_GREEN_PIN = 2; */
+static const int LAMP_HEAT_PIN =  3;
 static const int FAN_01_PIN = 4;
 static const int DHT_SENSOR_PIN = 5;
 DHT_nonblocking dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
@@ -43,8 +43,6 @@ void setup()
   digitalWrite(FAN_01_PIN, HIGH); /* same case as the above two */
   fan_on = false;
 
-/*   lamp_timer_start = millis(); */
-/*   lamp_timer_active = true; */
 }
 
 
