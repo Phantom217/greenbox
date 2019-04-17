@@ -12,12 +12,12 @@ static const int DHT_SENSOR_PIN = 5;
 DHT_nonblocking dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
 //static const unsigned long LAMP_TIMER = 10000;
 //unsigned long lamp_timer_start = 0;
-bool green_on = false;
-bool heat_on = false;
-bool fan_on = false;
+//bool green_on = false;
+//bool heat_on = false;
+//bool fan_on = false;
 //bool lamp_timer_active = false;
-String STATUS_HEAT="inHEAT OFF";//upon startup, the status of heat will be shown as this until it is commanded to turn on
-String STATUS_FAN="inFAN OFF";//upon startup, the status of fan will be shown as this until it is commanded to turn on
+String STATUS_HEAT="inHEAT OFF";//upon startup, the status of heat will initially be shown as this until it is commanded to turn on
+String STATUS_FAN="inFAN OFF";//upon startup, the status of fan will initially be shown as this until it is commanded to turn on
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
@@ -52,14 +52,12 @@ void setup()
   pinMode(FAN_01_PIN, OUTPUT);
 
   digitalWrite(LAMP_GREEN_PIN, LOW); /* somehow this turns it on, not sure why */
-  green_on = true;
+  //green_on = true;
   digitalWrite(LAMP_HEAT_PIN, HIGH); /* turns the lamp off */
-  heat_on = false;
+  //heat_on = false;
   digitalWrite(FAN_01_PIN, HIGH); /* same case as the above two */
-  fan_on = false;
+  //fan_on = false;
 
- //lamp_timer_start = millis();
- //lamp_timer_active = true;
   //greenbox setup end
 }
 
@@ -89,7 +87,7 @@ static bool measure_environment(float *temperature, float *humidity)
 void loop()
 {
   float temperature;
-  float temp_f;
+  //float temp_f;
 
   float humidity;
 
@@ -101,7 +99,7 @@ void loop()
     {
       STATUS_FAN="FAN ON";
       digitalWrite(FAN_01_PIN, LOW);//turn the fan on
-      fan_on = true;//turn the fan on
+      //fan_on = true;//turn the fan on
       Serial.println("Fan ON");//write out a string that indicates FAN ON
     
     }
@@ -110,7 +108,7 @@ void loop()
     {
       STATUS_FAN="FAN OFF";
       digitalWrite(FAN_01_PIN, HIGH);//turn the fan OFF
-      fan_on = false;//turn the fan on
+      //fan_on = false;//turn the fan on
       Serial.println("Fan OFF");//write out a string that indicates FAN OFF
       
     }
@@ -119,7 +117,7 @@ void loop()
     {  
       STATUS_HEAT="HEAT OFF";   
       digitalWrite(LAMP_HEAT_PIN, HIGH);//turn the heat lamp OFF
-      heat_on = false;//turn the heat lamp OFF
+      //heat_on = false;//turn the heat lamp OFF
       Serial.println("Heat OFF due to temp > 90");//write out a string that indicates heat OFF
       
     }
@@ -128,17 +126,11 @@ void loop()
     {   
       STATUS_HEAT="HEAT ON";  
       digitalWrite(LAMP_HEAT_PIN, LOW);//turn the heat lamp ON
-      heat_on = true;//turn the heat lamp ON
+      //heat_on = true;//turn the heat lamp ON
       Serial.println("Heat ON due to temp < 80");//write out a string that indicates heat ON
       
     }
 
-    /*else
-    {
-      digitalWrite(FAN_01_PIN, HIGH);//turn the fan off
-      fan_on = false;//turn the fan off
-      Serial.println("Fan OFF");//write out a string that indicates FAN OFF
-    }*/
     //print out temp and humidity in the form "T = 68.0 deg. C, H = 40.0%"
     Serial.print("T = ");
     //Serial.print(temperature, 1);
