@@ -16,8 +16,8 @@ DHT_nonblocking dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
 //bool heat_on = false;
 //bool fan_on = false;
 //bool lamp_timer_active = false;
-String STATUS_HEAT="inHEAT OFF";//upon startup, the status of heat will initially be shown as this until it is commanded to turn on
-String STATUS_FAN="inFAN OFF";//upon startup, the status of fan will initially be shown as this until it is commanded to turn on
+String STATUS_HEAT="HEAT OFF";//upon startup, the status of heat will initially be shown as this until it is commanded to turn on
+String STATUS_FAN="FAN OFF";//upon startup, the status of fan will initially be shown as this until it is commanded to turn on
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
@@ -95,7 +95,7 @@ void loop()
   if (measure_environment(&temperature, &humidity) == true)
   {
     //if (temperature >= 24.0)
-    if (((temperature*9/5)+32) >= 84.0)//if the temperature read by the sensor is greater than 
+    if (((temperature*9/5)+32) >= 90.0)//if the temperature read by the sensor is greater than 
     {
       STATUS_FAN="FAN ON";
       digitalWrite(FAN_01_PIN, LOW);//turn the fan on
@@ -104,7 +104,7 @@ void loop()
     
     }
 
-    if (((temperature*9/5)+32) < 82.0)//if the temperature read by the sensor is less than
+    if (((temperature*9/5)+32) < 85.0)//if the temperature read by the sensor is less than
     {
       STATUS_FAN="FAN OFF";
       digitalWrite(FAN_01_PIN, HIGH);//turn the fan OFF
