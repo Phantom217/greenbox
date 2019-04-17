@@ -1,3 +1,4 @@
+
 #include <dht_nonblocking.h>
 #define DHT_SENSOR_TYPE DHT_TYPE_11
 #include <SPI.h>
@@ -55,8 +56,8 @@ void setup()
   digitalWrite(FAN_01_PIN, HIGH); /* same case as the above two */
   fan_on = false;
 
- // lamp_timer_start = millis();
- // lamp_timer_active = true;
+ //lamp_timer_start = millis();
+ //lamp_timer_active = true;
   //greenbox setup end
 }
 
@@ -137,32 +138,6 @@ void loop()
     Serial.print(humidity, 1);
     Serial.println("%");
   }
-
- // if (lamp_timer_active && (millis() - lamp_timer_start) >= LAMP_TIMER)
- // {
-    //lamp_timer_start += LAMP_TIMER;
-    //green_on = !green_on;
-    //heat_on = !heat_on;
-
-    /*if (green_on && !heat_on)
-    {
-      //digitalWrite(LAMP_GREEN_PIN, LOW);
-     //digitalWrite(LAMP_HEAT_PIN, HIGH);
-      //Serial.println("Green Lamp ON, Heat Lamp OFF");
-    }*/
-
-    /*else if (heat_on && !green_on)
-    {
-      //digitalWrite(LAMP_HEAT_PIN, LOW);
-      //digitalWrite(LAMP_GREEN_PIN, HIGH);
-      //Serial.println("Heat Lamp ON, Green Lamp OFF");
-    }*/
-
-    /*else
-    {
-     // Serial.println("Well, this is awkward... write better code!");
-    }*/
-  //}
 
   //ethernet test section begin
    // listen for incoming clients
