@@ -13,7 +13,7 @@ String STATUS_FAN = "Fan OFF";
 
 byte mac[] = { 0x00, 0xAA, 0xBB,0xCC, 0xDE, 0x02 };
 
-IPAddress ip(192.168.0.254);
+IPAddress ip(192,168,0,254);
 
 EthernetServer server(80);
 
@@ -90,7 +90,7 @@ void loop()
       STATUS_HEAT = "Heat OFF";
       Serial.println("Heat OFF: Temp > 85 deg. F");
     }
-    if (tempreature <= 26.6)
+    if (temperature <= 26.6)
     {
       digitalWrite(LAMP_HEAT_PIN, LOW); /* heat lamp on */
       STATUS_HEAT = "Heat ON";
