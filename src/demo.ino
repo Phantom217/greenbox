@@ -2,7 +2,6 @@
 #define DHT_SENSOR_TYPE DHT_TYPE_11
 #include <SPI.h>
 #include <Ethernet.h>
-#include <SD.h>
 
 static const int LAMP_HEAT_PIN =  3;
 static const int FAN_01_PIN = 4;
