@@ -68,7 +68,7 @@ void loop()
   float humidity;
   float moisture;
 
-  temp_f = (temperature * 9/5) + 32;
+  temp_f = ((temperature * 9/5) + 32);
   moisture = analogRead(MT_01_PIN);
   moisture = map(moisture, 550, 0, 0, 100);
 
