@@ -9,6 +9,10 @@ static const int LAMP_GREEN_PIN = 2;
 static const int LAMP_HEAT_PIN =  3;
 static const int FAN_01_PIN = 4;
 static const int DHT_SENSOR_PIN = 5;
+
+int val = 0; //value for storing moisture value 
+int soilPin = A0;//Declare a variable for the soil moisture sensor 
+
 DHT_nonblocking dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
 //static const unsigned long LAMP_TIMER = 10000;
 //unsigned long lamp_timer_start = 0;
@@ -131,6 +135,8 @@ void loop()
       
     }
 
+     val = analogRead(soilPin);//Read the SIG value form sensor 
+
     //print out temp and humidity in the form "T = 68.0 deg. C, H = 40.0%"
     Serial.print("T = ");
     //Serial.print(temperature, 1);
@@ -139,6 +145,9 @@ void loop()
     Serial.print(" deg. F, H = ");
     Serial.print(humidity, 1);
     Serial.println("%");
+
+    Serial.print("moisture= ");
+    Serial.println(val);
   }
 
   //ethernet test section begin
@@ -169,7 +178,9 @@ void loop()
           client.print(((temperature * 9/5) + 32), 1);
           client.print(" deg. C, H = ");
           client.print(humidity, 1);
-          client.println("%");
+          client.println("% <br>");
+          client.print("Moisture= ");
+          client.print(val);
           
           client.println("<br>");
           client.print(STATUS_HEAT);
