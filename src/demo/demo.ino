@@ -1,6 +1,6 @@
+#include <dht.h>
 #include <dht_nonblocking.h>
 #define DHT_SENSOR_TYPE DHT_TYPE_11
-#define MT_SENSOR_TYPE DHT_TYPE_11
 #include <SPI.h>
 #include <Ethernet.h>
 
@@ -9,13 +9,11 @@ static const int FAN_01_PIN = 4;
 static const int DHT_SENSOR_PIN = 5;
 static const int MT_01_PIN = A0;
 DHT_nonblocking dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
-DHT_nonblocking mt_sensor(MT_01_PIN, MT_SENSOR_TYPE);
 String STATUS_HEAT = "Heat OFF";
 String STATUS_FAN = "Fan OFF";
 
 byte mac[] = { 0x00, 0xAA, 0xBB,0xCC, 0xDE, 0x02 };
 
-//IPAddress ip(192,168,0,254);
 IPAddress ip(192,168,1,75);
 
 EthernetServer server(80);
@@ -63,22 +61,6 @@ static bool measure_environment(float *temperature, float *humidity)
   return(false);
 }
 
-static bool measure_soil_moisture(float *moisture)
-{
-  static unsigned int measurement_timestamp = millis();
-
-/*   Measure once every four seconds */
-  if (millis() - measurement_timestamp > 3000ul)
-  {
-    if (mt_sensor.measure(moisture) == true)
-    {
-      measurement_timestamp = millis();
-      return(true);
-    }
-  }
-  return(false);
-}
-
 void loop()
 {
   float temperature;
@@ -122,13 +104,8 @@ void loop()
     Serial.print(temp_f, 1);
     Serial.print(" deg. F, H = ");
     Serial.print(humidity, 1);
-    Serial.println("%");
-  }
-
-  if (moisture_soil_moisture(&moisture) == true)
-  {
-    Serial.print("Moisture = ");
-    Serial.print(moisture);
+    Serial.print("%, Moisture = ");
+    Serial.print(moisture, 1);
     Serial.println("%");
   }
 
