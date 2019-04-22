@@ -15,7 +15,8 @@ String STATUS_FAN = "Fan OFF";
 
 byte mac[] = { 0x00, 0xAA, 0xBB,0xCC, 0xDE, 0x02 };
 
-IPAddress ip(192,168,0,254);
+//IPAddress ip(192,168,0,254);
+IPAddress ip(192,168,1,75);
 
 EthernetServer server(80);
 
@@ -64,7 +65,7 @@ static bool measure_environment(float *temperature, float *humidity)
 
 static bool measure_soil_moisture(float *moisture)
 {
-  static unsigned int measure_timestamp = millis();
+  static unsigned int measurement_timestamp = millis();
 
 /*   Measure once every four seconds */
   if (millis() - measurement_timestamp > 3000ul)
