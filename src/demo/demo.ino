@@ -1,35 +1,47 @@
 #include <dht_nonblocking.h>
 #define DHT_SENSOR_TYPE DHT_TYPE_11
+#include <SPI.h>
+#include <Ethernet.h>
 
-static const int LAMP_GREEN_PIN = 2;
 static const int LAMP_HEAT_PIN =  3;
 static const int FAN_01_PIN = 4;
 static const int DHT_SENSOR_PIN = 5;
+static const int SOIL_PIN = A0;
+int moisture_val = 0;
+
 DHT_nonblocking dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
-static const unsigned long LAMP_TIMER = 10000;
-unsigned long lamp_timer_start = 0;
-bool green_on = false;
-bool heat_on = false;
-bool fan_on = false;
-bool lamp_timer_active = false;
+
+String STATUS_HEAT = "Heat OFF";
+String STATUS_FAN = "Fan OFF";
+String STATUS_SOIL = "Soil: Too Dry";
+
+boolean moist_soil = false;
+
+byte mac[] = { 0x00, 0xAA, 0xBB,0xCC, 0xDE, 0x02 };
+
+IPAddress ip(192,168,1,75);
+
+EthernetServer server(80);
 
 void setup()
 {
   Serial.begin(9600);
 
-  pinMode(LAMP_GREEN_PIN, OUTPUT);
+  while (!Serial)
+  {
+    ;
+  }
+
+  Ethernet.begin(mac, ip);
+  server.begin();
+  Serial.print("server located at: ");
+  Serial.println(Ethernet.localIP());
+
   pinMode(LAMP_HEAT_PIN, OUTPUT);
   pinMode(FAN_01_PIN, OUTPUT);
 
-  digitalWrite(LAMP_GREEN_PIN, LOW); /* somehow this turns it on, not sure why */
-  green_on = true;
   digitalWrite(LAMP_HEAT_PIN, HIGH); /* turns the lamp off */
-  heat_on = false;
-  digitalWrite(FAN_01_PIN, HIGH); /* same case as the above two */
-  fan_on = false;
-
-  lamp_timer_start = millis();
-  lamp_timer_active = true;
+  digitalWrite(FAN_01_PIN, HIGH); /* same case as the above */
 }
 
 
@@ -54,7 +66,6 @@ static bool measure_environment(float *temperature, float *humidity)
   return(false);
 }
 
-
 void loop()
 {
   float temperature;
@@ -63,50 +74,107 @@ void loop()
   /* Measure temperature and humidity.  If true, measurement is available. */
   if (measure_environment(&temperature, &humidity) == true)
   {
-    if (temperature >= 24.0)
+    if (((temperature*9/5)+32) >= 90.0)
     {
-      digitalWrite(FAN_01_PIN, LOW);
-      fan_on = true;
+      digitalWrite(FAN_01_PIN, LOW); /*turn fan on */
+      STATUS_FAN = "Fan ON";
       Serial.println("Fan ON");
     }
+    if (((temperature*9/5)+32) < 85.0)
+    {
+      digitalWrite(FAN_01_PIN, HIGH); /*turn fan off */
+      STATUS_FAN = "Fan OFF";
+      Serial.println("Fan OFF");
+    }
+    if (((temperature*9/5)+32) > 85.0)
+    {
+      digitalWrite(LAMP_HEAT_PIN, HIGH); /* heat lamp off */
+      STATUS_HEAT = "Heat OFF";
+      Serial.println("Heat OFF: Temp > 85 deg. F");
+    }
+    if (((temperature*9/5)+32) <= 80.0)
+    {
+      digitalWrite(LAMP_HEAT_PIN, LOW); /* heat lamp on */
+      STATUS_HEAT = "Heat ON";
+      Serial.println("Heat ON: Temp < 80 deg. F");
+    }
 
+    moisture_val = analogRead(SOIL_PIN);
+
+    if (moisture_val > 350 && moisture_val < 700)
+    {
+      moist_soil = true;
+      STATUS_SOIL = "Soil: Okay";
+    }
+    else if (moisture_val > 700)
+    {
+      moist_soil = false;
+      STATUS_SOIL = "Soil: Too Dry";
+    }
     else
     {
-      digitalWrite(FAN_01_PIN, HIGH);
-      fan_on = false;
-      Serial.println("Fan OFF");
+      moist_soil = false;
+      STATUS_SOIL = "Soil: Too Much Water";
     }
 
     Serial.print("T = ");
-    Serial.print(temperature, 1);
-    Serial.print(" deg. C, H = ");
+    Serial.print(((temperature*9/5)+32), 1);
+    Serial.print(" deg. F, H = ");
     Serial.print(humidity, 1);
-    Serial.println("%");
+    Serial.print("%, Moisture = ");
+    Serial.println(moisture_val, 1);
+    Serial.println(STATUS_SOIL);
   }
 
-  if (lamp_timer_active && (millis() - lamp_timer_start) >= LAMP_TIMER)
+ EthernetClient client = server.available();
+  if (client)
   {
-    lamp_timer_start += LAMP_TIMER;
-    green_on = !green_on;
-    heat_on = !heat_on;
-
-    if (green_on && !heat_on)
+    Serial.println("new client");
+    // an http request ends with a blank line
+    boolean currentLineIsBlank = true;
+    while (client.connected())
     {
-      digitalWrite(LAMP_GREEN_PIN, LOW);
-      digitalWrite(LAMP_HEAT_PIN, HIGH);
-      Serial.println("Green Lamp ON, Heat Lamp OFF");
-    }
+      if (client.available())
+      {
+        char c = client.read();
+        Serial.write(c);
+        if (c == '\n' && currentLineIsBlank)
+        {
+          client.println("HTTP/1.1 200 OK");
+          client.println("Content-Type: text/html");
+          client.println("Connection: close");  // the connection will be closed after completion of the response
+          client.println("Refresh: 4");  // refresh the page automatically every 5 sec
+          client.println();
+          client.println("<!DOCTYPE HTML>");
+          client.println("<html>");
 
-    else if (heat_on && !green_on)
-    {
-      digitalWrite(LAMP_HEAT_PIN, LOW);
-      digitalWrite(LAMP_GREEN_PIN, HIGH);
-      Serial.println("Heat Lamp ON, Green Lamp OFF");
-    }
+          client.print("T = ");
+          client.print(((temperature*9/5)+32), 1);
+          client.print(" deg. F, H = ");
+          client.print(humidity, 1);
+          client.print("%, ");
+          client.println(STATUS_SOIL);
 
-    else
-    {
-      Serial.println("Well, this is awkward... write better code!");
+          client.println("<br>");
+          client.print(STATUS_HEAT);
+          client.print("----");
+          client.print(STATUS_FAN);
+
+          client.println("</html>");
+          break;
+        }
+        if (c == '\n')
+        {
+          currentLineIsBlank = true;
+        }
+        else if (c != '\r')
+        {
+          currentLineIsBlank = false;
+        }
+      }
     }
+    delay(1);
+    client.stop();
+    Serial.println("client disconnected");
   }
 }
